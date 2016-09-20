@@ -288,7 +288,8 @@ void SSUSessionConfirmedPacket::SetRemoteRouterIdentity(
   m_RemoteIdentity = identity;
 }
 
-i2p::data::IdentityEx& SSUSessionConfirmedPacket::GetRemoteRouterIdentity() {
+const i2p::data::IdentityEx& SSUSessionConfirmedPacket::
+    GetRemoteRouterIdentity() const {
   return m_RemoteIdentity;
 }
 
@@ -876,7 +877,7 @@ std::size_t SSUPacketBuilder::GetPaddedSize(
   return size + GetPaddingSize(size);
 }
 
-void SSUPacketBuilder::WriteHeader(SSUHeader* header) {
+void SSUPacketBuilder::WriteHeader(const SSUHeader* header) {
   if (header->GetMAC())
     WriteData(header->GetMAC(), static_cast<std::size_t>(SSUSize::MAC));
   else
@@ -889,7 +890,6 @@ void SSUPacketBuilder::WriteHeader(SSUHeader* header) {
   WriteUInt8(flag);
   WriteUInt32(header->GetTime());
   if (header->HasExtendedOptions()) {
-    // TODO(EinMByte): Check for overflow
     WriteUInt8(header->GetExtendedOptionsSize());
     WriteData(
         header->GetExtendedOptionsData(),
@@ -897,15 +897,16 @@ void SSUPacketBuilder::WriteHeader(SSUHeader* header) {
   }
 }
 
-void SSUPacketBuilder::WriteSessionRequest(SSUSessionRequestPacket* packet) {
+void SSUPacketBuilder::WriteSessionRequest(
+    const SSUSessionRequestPacket* packet) {
   WriteData(packet->GetDhX(), static_cast<std::size_t>(SSUSize::DHPublic));
   WriteUInt8(packet->GetIPAddressSize());
   WriteData(packet->GetIPAddress(), packet->GetIPAddressSize());
 }
 
-void SSUPacketBuilder::WriteSessionCreated(SSUSessionCreatedPacket* packet) {
+void SSUPacketBuilder::WriteSessionCreated(
+    const SSUSessionCreatedPacket* packet) {
   WriteData(packet->GetDhY(), static_cast<std::size_t>(SSUSize::DHPublic));
-  // TODO(EinMByte): Check for overflow
   WriteUInt8(packet->GetIPAddressSize());
   WriteData(packet->GetIPAddress(), packet->GetIPAddressSize());
   WriteUInt16(packet->GetPort());
@@ -915,7 +916,7 @@ void SSUPacketBuilder::WriteSessionCreated(SSUSessionCreatedPacket* packet) {
 }
 
 void SSUPacketBuilder::WriteSessionConfirmed(
-    SSUSessionConfirmedPacket* packet) {
+    const SSUSessionConfirmedPacket* packet) {
   std::uint8_t* const begin = m_Data;
   WriteUInt8(0x01);  // 1 byte info, with 1 fragment
   const std::size_t identity_size = packet->GetRemoteRouterIdentity().GetFullLen();
@@ -937,51 +938,51 @@ void SSUPacketBuilder::WriteSessionConfirmed(
 }
 
 void SSUPacketBuilder::WriteRelayRequest(
-    SSURelayRequestPacket* packet) {}
+    const SSURelayRequestPacket* packet) {}
 
 void SSUPacketBuilder::WriteRelayResponse(
-    SSURelayResponsePacket* packet) {}
+    const SSURelayResponsePacket* packet) {}
 
 void SSUPacketBuilder::WriteRelayIntro(
-    SSURelayIntroPacket* packet) {}
+    const SSURelayIntroPacket* packet) {}
 
 void SSUPacketBuilder::WriteData(
-    SSUDataPacket* packet) {}
+    const SSUDataPacket* packet) {}
 
 void SSUPacketBuilder::WritePeerTest(
-    SSUPeerTestPacket* packet) {}
+    const SSUPeerTestPacket* packet) {}
 
 void SSUPacketBuilder::WriteSessionDestroyed(
-    SSUSessionDestroyedPacket* packet) {}
+    const SSUSessionDestroyedPacket* packet) {}
 
-void SSUPacketBuilder::WritePacket(SSUPacket* packet) {
+void SSUPacketBuilder::WritePacket(const SSUPacket* packet) {
   switch (packet->GetHeader()->GetPayloadType()) {
     case SSUPayloadType::SessionRequest:
-      WriteSessionRequest(static_cast<SSUSessionRequestPacket*>(packet));
+      WriteSessionRequest(static_cast<const SSUSessionRequestPacket*>(packet));
       break;
     case SSUPayloadType::SessionCreated:
-      WriteSessionCreated(static_cast<SSUSessionCreatedPacket*>(packet));
+      WriteSessionCreated(static_cast<const SSUSessionCreatedPacket*>(packet));
       break;
     case SSUPayloadType::SessionConfirmed:
-      WriteSessionConfirmed(static_cast<SSUSessionConfirmedPacket*>(packet));
+      WriteSessionConfirmed(static_cast<const SSUSessionConfirmedPacket*>(packet));
       break;
     case SSUPayloadType::RelayRequest:
-      WriteRelayRequest(static_cast<SSURelayRequestPacket*>(packet));
+      WriteRelayRequest(static_cast<const SSURelayRequestPacket*>(packet));
       break;
     case SSUPayloadType::RelayResponse:
-      WriteRelayResponse(static_cast<SSURelayResponsePacket*>(packet));
+      WriteRelayResponse(static_cast<const SSURelayResponsePacket*>(packet));
       break;
     case SSUPayloadType::RelayIntro:
-      WriteRelayIntro(static_cast<SSURelayIntroPacket*>(packet));
+      WriteRelayIntro(static_cast<const SSURelayIntroPacket*>(packet));
       break;
     case SSUPayloadType::Data:
-      WriteData(static_cast<SSUDataPacket*>(packet));
+      WriteData(static_cast<const SSUDataPacket*>(packet));
       break;
     case SSUPayloadType::PeerTest:
-      WritePeerTest(static_cast<SSUPeerTestPacket*>(packet));
+      WritePeerTest(static_cast<const SSUPeerTestPacket*>(packet));
       break;
     case SSUPayloadType::SessionDestroyed:
-      WriteSessionDestroyed(static_cast<SSUSessionDestroyedPacket*>(packet));
+      WriteSessionDestroyed(static_cast<const SSUSessionDestroyedPacket*>(packet));
       break;
   }
 }

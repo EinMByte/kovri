@@ -351,9 +351,9 @@ class SSUSessionConfirmedPacket : public SSUPacket {
   void SetRemoteRouterIdentity(
       const i2p::data::IdentityEx& identity);
 
-  /// @return Reference to the router identity to be included in the
+  /// @return Constant reference to the router identity to be included in the
   ///         SessionConfirmed message
-  i2p::data::IdentityEx& GetRemoteRouterIdentity();
+  const i2p::data::IdentityEx& GetRemoteRouterIdentity() const;
 
   /// @brief Sets 4 byte signed-on timestamp
   /// @note Assumes content is valid (based on position)
@@ -809,48 +809,48 @@ class SSUPacketBuilder : private i2p::util::OutputByteStream {
   /// @pre The data buffer must be sufficiently large.
   /// @param data Reference to pointer to data
   /// @param header Pointer to SSU header
-  void WriteHeader(SSUHeader* header);
+  void WriteHeader(const SSUHeader* header);
 
   /// @brief Writes SessionRequest message
   /// @param packet SessionRequest packet to write
-  void WriteSessionRequest(SSUSessionRequestPacket* packet);
+  void WriteSessionRequest(const SSUSessionRequestPacket* packet);
 
   /// @brief Writes SessionCreated message
   /// @param packet SessionCreated packet to write
-  void WriteSessionCreated(SSUSessionCreatedPacket* packet);
+  void WriteSessionCreated(const SSUSessionCreatedPacket* packet);
 
   /// @brief Writes SessionConfirmed message
   /// @param packet SessionConfirmed packet to write
-  void WriteSessionConfirmed(SSUSessionConfirmedPacket* packet);
+  void WriteSessionConfirmed(const SSUSessionConfirmedPacket* packet);
 
   /// @brief Writes RelayRequest message
   /// @param packet RelayRequest packet to write
-  void WriteRelayRequest(SSURelayRequestPacket* packet);
+  void WriteRelayRequest(const SSURelayRequestPacket* packet);
 
   /// @brief Writes RelayResponse message
   /// @param packet RelayResponse packet to write
-  void WriteRelayResponse(SSURelayResponsePacket* packet);
+  void WriteRelayResponse(const SSURelayResponsePacket* packet);
 
   /// @brief Writes RelayIntro message
   /// @param packet RelayIntro packet to write
-  void WriteRelayIntro(SSURelayIntroPacket* packet);
+  void WriteRelayIntro(const SSURelayIntroPacket* packet);
 
   /// @brief Writes Data message
   /// @param packet Data packet to write
-  void WriteData(SSUDataPacket* packet);
+  void WriteData(const SSUDataPacket* packet);
 
   /// @brief Writes PeerTest message
   /// @param packet PeerTest packet to write
-  void WritePeerTest(SSUPeerTestPacket* packet);
+  void WritePeerTest(const SSUPeerTestPacket* packet);
 
   /// @brief Writes SessionDestroyed message
   /// @param packet SessionDestroyed packet to write
-  void WriteSessionDestroyed(SSUSessionDestroyedPacket* packet);
+  void WriteSessionDestroyed(const SSUSessionDestroyedPacket* packet);
 
   /// @brief Writes SSU packet for SSU session
   /// @param packet SSU packet to write
   /// @note packet is one of any payload types
-  void WritePacket(SSUPacket* packet);
+  void WritePacket(const SSUPacket* packet);
 };
 
 }  // namespace transport
